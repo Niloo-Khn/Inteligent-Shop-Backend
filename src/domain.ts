@@ -1,0 +1,12 @@
+export type SellerAccount={id:string;email:string;displayName:string;passwordHash:string;createdAt:string};
+export type PublicAccount=Omit<SellerAccount,"passwordHash">;
+export type Shop={id:string;ownerId:string;name:string;slug:string;channelType:string;externalUrl:string;currency:string;status:"active"|"inactive";createdAt:string;updatedAt:string};
+export type ProductSource={provider:string;externalId:string;sourceUrl:string};
+export type Product={id:string;shopId:string;sku:string;name:string;description:string;imageUrl:string;price:number;compareAtPrice:number|null;currency:string;quantity:number;shippingSummary:string;status:"draft"|"active"|"archived";source:ProductSource|null;createdAt:string;updatedAt:string};
+export type Buyer={externalId:string;name:string;email:string;phone:string;shippingAddress:string};
+export type OrderItem={productId:string;sku:string;name:string;imageUrl:string;quantity:number;unitPrice:number};
+export type Order={id:string;shopId:string;externalOrderId:string;buyer:Buyer;items:OrderItem[];subtotal:number;discount:number;shipping:number;total:number;currency:string;status:"pending"|"paid"|"processing"|"shipped"|"delivered"|"cancelled"|"refunded";placedAt:string;updatedAt:string};
+export type Promotion={id:string;shopId:string;productId:string|null;name:string;code:string;kind:"percentage"|"fixed";value:number;startsAt:string;endsAt:string;active:boolean;createdAt:string};
+export type Incident={id:string;shopId:string;orderId:string;type:string;message:string;status:"open"|"resolved";createdAt:string;updatedAt:string};
+export type Refund={id:string;shopId:string;orderId:string;amount:number;reason:string;status:"requested"|"approved"|"rejected"|"completed";createdAt:string;updatedAt:string};
+export type Recommendation={shopId:string;productId:string;position:number;updatedAt:string};
