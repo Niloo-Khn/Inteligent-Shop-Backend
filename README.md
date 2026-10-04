@@ -66,10 +66,26 @@ The API listens on `http://localhost:4100`. Generate `AUTH_SECRET` with `openssl
 - Buyers: `GET /shops/:shopId/buyers`
 - Promotion: `GET/POST /shops/:shopId/promotions`
 - Homepage: `GET/PUT /shops/:shopId/recommendations`
+- AliExpress discovery: `POST /shops/:shopId/catalog/aliexpress/search`
+- AI copy review: `POST /shops/:shopId/catalog/enrich`
 
 All routes except health, registration, and login require a bearer token. Ownership is checked again at the shop boundary to prevent cross-seller access.
 
-Products support editable source metadata: `provider`, `externalId`, and `sourceUrl`. A future catalog connector layer can normalize authorized Amazon, AliExpress, or other supplier results into this same product contract. Marketplace scraping or AI-generated product claims are intentionally not fabricated in this version; each provider will require approved API access, attribution rules, and freshness tracking.
+Products support editable source metadata: `provider`, `externalId`, and `sourceUrl`. The AliExpress connector uses the official Affiliate Product Query API over HTTPS with TOP HMAC signing. Search results are previews: the seller must review price, delivery, stock, claims, and images before publishing. The affiliate search does not provide reliable inventory quantity, so imported products start with quantity `0` and status `draft`.
+
+Optional OpenAI enrichment rewrites the supplier title and description using Structured Outputs. It is instructed to use only supplied facts and cannot change pricing, source data, inventory, or shipping. Both provider keys remain server-side.
+
+Configure `.env`:
+
+```env
+ALIEXPRESS_APP_KEY=your-app-key
+ALIEXPRESS_APP_SECRET=your-app-secret
+ALIEXPRESS_TRACKING_ID=your-affiliate-tracking-id
+OPENAI_API_KEY=your-openai-api-key
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Create an AliExpress Open Platform application, retrieve its App Key/App Secret, and request the relevant affiliate API permission before searching. Do not use unofficial scraping endpoints.
 
 ## Important next production work
 
